@@ -1,4 +1,6 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
+import { readById } from "../data/mongo/managers/users.manager.js";
 
 class CustomRouter {
   constructor() {
@@ -16,11 +18,16 @@ class CustomRouter {
       }
     });
   responses = (req, res, next) => {
+    // console.log(res)
     res.json200 = (response, message) =>
       res.status(200).json({ response, message });
     res.json201 = (response, message) =>
       res.status(201).json({ response, message });
-    res.json400 = (message) => res.status(400).json({ error: message });
+    res.json400 = (message) => {
+      console.log('Respuesta 400:', message);  // Log para verificar el mensaje
+      res.status(400).json({ error: message });
+    };
+    
     res.json401 = () => res.status(401).json({ error: "Bad Auth!" });
     res.json403 = () => res.status(403).json({ error: "Forbidden!" });
     res.json404 = () => res.status(404).json({ error: "Not found!" });
@@ -29,9 +36,11 @@ class CustomRouter {
   policies = (policies) => async (req, res, next) => {
     try {
       if (policies.includes("PUBLIC")) return next();
+      console.log('Policies:', policies);  // Log para verificar las políticas
+      console.log(req)
       const token = req?.cookies?.token;
       if (!token) return res.json401();
-      const data = jwt.verify(token, process.env.SECRET);
+      const data = jwt.verify(token, process.env.SECRET_KEY);
       const { role, user_id } = data;
       if (!role || !user_id) return res.json401();
       if (

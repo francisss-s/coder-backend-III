@@ -1,4 +1,6 @@
-import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import {
   create,
   readByEmail,
@@ -7,11 +9,6 @@ import {
 } from "../data/mongo/managers/users.manager.js";
 import { createHashUtil, verifyHashUtil } from "../utils/hash.util.js";
 import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
-
-import { Strategy as LocalStrategy } from "passport-local";
-import passport from "passport";
-
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = process.env;
 
 passport.use(
   "register",
@@ -48,19 +45,14 @@ passport.use(
       try {
         const user = await readByEmail(email);
         if (!user) {
-          // const error = new Error("USER NOT FOUND");
-          // error.statusCode = 401;
-          // return done(error);
           const info = { message: "USER NOT FOUND", statusCode: 401 };
           return done(null, false, info);
         }
-        const passwordForm = password; /* req.body.password */
+        const passwordForm = password;
         const passwordDb = user.password;
+
         const verify = verifyHashUtil(passwordForm, passwordDb);
         if (!verify) {
-          // const error = new Error("INVALID CREDENTIALS");
-          // error.statusCode = 401;
-          // return done(error);
           const info = { message: "INVALID CREDENTIALS", statusCode: 401 };
           return done(null, false, info);
         }
@@ -110,14 +102,12 @@ passport.use(
       secretOrKey: process.env.SECRET_KEY,
     },
     async (data, done) => {
+      console.log('JWT data:', data);  // Verifica el contenido del JWT
       try {
         const { user_id } = data;
         const user = await readById(user_id);
         const { isOnline } = user;
         if (!isOnline) {
-          // const error = new Error("USER IS NOT ONLINE");
-          // error.statusCode = 401;
-          // return done(error);
           const info = { message: "USER IS NOT ONLINE", statusCode: 401 };
           return done(null, false, info);
         }
@@ -147,6 +137,5 @@ passport.use(
     }
   )
 );
-
 
 export default passport;

@@ -1,12 +1,17 @@
-import { Router } from "express";
+import CustomRouter from "../../utils/CustomRouter.util.js";
 import sessionsApiRouter from "./sessions.api.js";
 import usersApiRouter from "./users.api.js";
 
-const apiRouter = Router();
+class ApiRouter extends CustomRouter {
+  constructor() {
+    super();
+    this.init();
+  }
+  init = () => {
+    this.use("/users", ["PUBLIC"], usersApiRouter);
+    this.use("/sessions", ["PUBLIC"], sessionsApiRouter);
+  };
+}
 
-// Rutas de la API
-apiRouter.use("/users", usersApiRouter);
-apiRouter.use("/sessions", sessionsApiRouter);
-
-
-export default apiRouter;
+const apiRouter = new ApiRouter();
+export default apiRouter.getRouter();

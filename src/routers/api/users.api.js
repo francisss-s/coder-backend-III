@@ -13,7 +13,7 @@ class UsersApiRouter extends CustomRouter {
     this.init();
   }
   init = () => {
-    this.create("/", ["ADMIN"], createUser);
+    this.create("/", ["PUBLIC"], createUser);
     this.read("/", ["ADMIN"], readUsers);
     this.update("/:id", ["USER", "ADMIN"], updateUser);
     this.destroy("/:id", ["USER", "ADMIN"], destroyUser);
