@@ -1,12 +1,12 @@
 import { Router } from "express";
-import productsApiRouter from "./products.api.js";
-import sessionRouter from "express-session";
+import sessionsApiRouter from "./sessions.api.js";
 import usersApiRouter from "./users.api.js";
 
-const apiRouter = Router()
+const apiRouter = Router();
 
-apiRouter.use("/products", productsApiRouter)
-apiRouter.use("/cookies", cookiesRouter)
-apiRouter.use("/sessions", sessionsRouter)
+// Rutas de la API
+apiRouter.use("/users", usersApiRouter);
+apiRouter.use("/sessions", sessionsApiRouter);
+
 
 export default apiRouter;

@@ -1,15 +1,26 @@
 import { Schema, model } from "mongoose";
 
-const collection = "users"
+import bcrypt from 'bcrypt';
+
+const collection = "users";
 
 const schema = new Schema({
-    name: { type: String },
-    email: { type: String, required: true, index: true, unique: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    age: { type: Number, required: true },
     password: { type: String, required: true },
-    role: { type: String, default: 'USER', enum: ['USER','ADMIN','PREM'] },
-    verifyUser: { type: Boolean, default: false },
-    verifyCode: { type: String, default: "1234" }
-})
+    cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
+    role: { type: String, default: 'user', enum: ['user', 'admin'] }
+});
 
-const User = model(collection, schema)
-export default User
+// Encriptar la contraseña antes de guardar
+schema.pre('save', function(next) {
+    if (this.isModified('password')) {
+        this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
+    }
+    next();
+});
+
+const User = model(collection, schema);
+export default User;

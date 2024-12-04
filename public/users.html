@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Usuarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6Hl7oVK8zjE8qpf9sD2p6vH1S3akBznpv9vX1nX5hz" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container my-5">
+  <h1 class="text-center">Lista de Usuarios</h1>
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Correo</th>
+        <th scope="col">Edad</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable">
+      <!-- Los usuarios se cargarán aquí con JavaScript -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  async function fetchUsers() {
+    try {
+      const response = await fetch('/api/users');
+      const result = await response.json();
+      
+      const usersTable = document.getElementById('usersTable');
+      result.response.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${user.first_name}</td>
+          <td>${user.last_name}</td>
+          <td>${user.email}</td>
+          <td>${user.age}</td>
+          <td>
+            <a href="actualizar_usuario.html?id=${user._id}" class="btn btn-warning btn-sm">Actualizar</a>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')">Eliminar</button>
+          </td>
+        `;
+        usersTable.appendChild(row);
+      });
+    } catch (error) {
+      alert('Error al cargar los usuarios');
+    }
+  }
+
+  async function deleteUser(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+      try {
+        const response = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        alert(result.message);
+        location.reload();  // Recarga la página para actualizar la lista
+      } catch (error) {
+        alert('Error al eliminar el usuario');
+      }
+    }
+  }
+
+  fetchUsers();  // Cargar los usuarios cuando la página se cargue
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0m3j5+UnvQISmeioeAt9Tg==" crossorigin="anonymous"></script>
+</body>
+</html>

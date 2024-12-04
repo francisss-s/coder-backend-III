@@ -13,7 +13,7 @@ class Manager {
         }
     }
 
-    readOne = async (email) => {
+    readByEmail = async (email) => {
         try {
             const one = await this.model.findOne({ email }).lean()
             return one
@@ -22,9 +22,18 @@ class Manager {
         }
     }
 
-    read = async () => {
+    readById = async (id) => {
         try {
-            const all = await this.model.find().lean()
+            const one = await this.model.findOne({ _id: id }).lean()
+            return one
+        } catch (error) {
+            throw error
+        }
+    }
+
+    read = async (data) => {
+        try {
+            const all = await this.model.find(data).lean()
             return all
         } catch (error) {
             throw error
