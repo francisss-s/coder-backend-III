@@ -1,6 +1,5 @@
 import CustomRouter from "../../utils/CustomRouter.util.js";
-import sessionsApiRouter from "./sessions.api.js";
-import usersApiRouter from "./users.api.js";
+import users from "./users.api.js";
 
 class ApiRouter extends CustomRouter {
   constructor() {
@@ -8,8 +7,7 @@ class ApiRouter extends CustomRouter {
     this.init();
   }
   init = () => {
-    this.use("/users", ["PUBLIC"], usersApiRouter);
-    this.use("/sessions", ["PUBLIC"], sessionsApiRouter);
+    this.use("/users", ["PUBLIC"], users);
   };
 }
 

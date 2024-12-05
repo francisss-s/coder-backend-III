@@ -1,6 +1,4 @@
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import {
   create,
   readByEmail,
@@ -9,6 +7,10 @@ import {
 } from "../data/mongo/managers/users.manager.js";
 import { createHashUtil, verifyHashUtil } from "../utils/hash.util.js";
 import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
+
+import { Strategy as LocalStrategy } from "passport-local";
+import jwt from "jsonwebtoken";
+import passport from "passport";
 
 passport.use(
   "register",
@@ -25,11 +27,29 @@ passport.use(
           return done(null, false, info);
         }
         const hashedPassword = createHashUtil(password);
-        const user = await create({
-          email,
-          password: hashedPassword,
-          name: req.body.name || "Default Name",
+        
+        let regObj = {
+          "first_name": req.body.first_name,
+          "last_name": req.body.last_name,
+          "email": email,
+          "age": req.body.age,
+          "role": req.body.role || "USER",
+          "password": hashedPassword
+        }
+        const user = await create(regObj);
+
+        // Generar token JWT
+        const payload = { user_id: user._id, role: user.role };
+        const token = jwt.sign(payload, process.env.SECRET_KEY, {
+          expiresIn: "1d",
         });
+
+        // Marcar usuario como conectado
+        await update(user._id, { isOnline: true });
+
+        // Adjuntar token al usuario para devolverlo
+        user.token = token;
+
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -94,30 +114,35 @@ passport.use(
     }
   )
 );
+
 passport.use(
-  "online",
+  "current",
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
       secretOrKey: process.env.SECRET_KEY,
     },
     async (data, done) => {
-      console.log('JWT data:', data);  // Verifica el contenido del JWT
       try {
         const { user_id } = data;
+
+        // Busca al usuario en la base de datos
         const user = await readById(user_id);
-        const { isOnline } = user;
-        if (!isOnline) {
-          const info = { message: "USER IS NOT ONLINE", statusCode: 401 };
+        if (!user) {
+          const info = { message: "USER NOT FOUND", statusCode: 404 };
           return done(null, false, info);
         }
+
+        // Si el usuario existe, devuélvelo
         return done(null, user);
       } catch (error) {
-        return done(error);
+        console.error("Error en la estrategia current:", error);
+        return done(error, false);
       }
     }
   )
 );
+
 passport.use(
   "signout",
   new JwtStrategy(
