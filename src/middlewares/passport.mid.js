@@ -1,16 +1,11 @@
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
-import {
-  create,
-  readByEmail,
-  readById,
-  update,
-} from "../data/mongo/managers/users.manager.js";
 import { createHashUtil, verifyHashUtil } from "../utils/hash.util.js";
 import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
 
 import { Strategy as LocalStrategy } from "passport-local";
 import jwt from "jsonwebtoken";
 import passport from "passport";
+import usersManager from "../dao/mongo/managers/users.manager.js";
 
 passport.use(
   "register",
@@ -21,7 +16,7 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
-        const one = await readByEmail(email);
+        const one = await usersManager.readByEmail(email);
         if (one) {
           const info = { message: "USER ALREADY EXISTS", statusCode: 401 };
           return done(null, false, info);
@@ -36,7 +31,7 @@ passport.use(
           "role": req.body.role || "USER",
           "password": hashedPassword
         }
-        const user = await create(regObj);
+        const user = await usersManager.create(regObj);
 
         // Generar token JWT
         const payload = { user_id: user._id, role: user.role };
@@ -45,7 +40,7 @@ passport.use(
         });
 
         // Marcar usuario como conectado
-        await update(user._id, { isOnline: true });
+        await usersManager.update(user._id, { isOnline: true });
 
         // Adjuntar token al usuario para devolverlo
         user.token = token;
@@ -63,7 +58,7 @@ passport.use(
     { usernameField: "email" },
     async (email, password, done) => {
       try {
-        const user = await readByEmail(email);
+        const user = await usersManager.readByEmail(email);
         if (!user) {
           const info = { message: "USER NOT FOUND", statusCode: 401 };
           return done(null, false, info);
@@ -82,7 +77,7 @@ passport.use(
         };
         const token = createTokenUtil(data);
         user.token = token;
-        await update(user._id, { isOnline: true });
+        await usersManager.update(user._id, { isOnline: true });
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -108,7 +103,7 @@ passport.use(
           const info = { message: "NOT AUTHORIZE", statusCode: 403 };
           return done(null, false, info);
         }
-        const user = await readById(user_id);
+        const user = await usersManager.readById(user_id);
         return done(null, user);
       } catch (error) {}
     }
@@ -127,7 +122,7 @@ passport.use(
         const { user_id } = data;
 
         // Busca al usuario en la base de datos
-        const user = await readById(user_id);
+        const user = await usersManager.readById(user_id);
         if (!user) {
           const info = { message: "USER NOT FOUND", statusCode: 404 };
           return done(null, false, info);
@@ -153,7 +148,7 @@ passport.use(
     async (data, done) => {
       try {
         const { user_id } = data;
-        await update(user_id, { isOnline: false });
+        await usersManager.update(user_id, { isOnline: false });
         // construiria un token que venza al instante
         return done(null, { user_id: null });
       } catch (error) {

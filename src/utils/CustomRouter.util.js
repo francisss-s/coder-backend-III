@@ -1,6 +1,6 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import { readById } from "../data/mongo/managers/users.manager.js";
+import userManager from "../dao/mongo/managers/users.manager.js"
 
 class CustomRouter {
   constructor() {
@@ -36,8 +36,6 @@ class CustomRouter {
   policies = (policies) => async (req, res, next) => {
     try {
       if (policies.includes("PUBLIC")) return next();
-      console.log('Policies:', policies);  // Log para verificar las políticas
-      console.log(req)
       const token = req?.cookies?.token;
       if (!token) return res.json401();
       const data = jwt.verify(token, process.env.SECRET_KEY);
@@ -47,7 +45,7 @@ class CustomRouter {
         (policies.includes("USER") && role === "USER") ||
         (policies.includes("ADMIN") && role === "ADMIN")
       ) {
-        const user = await readById(user_id);
+        const user = await userManager.readById(user_id);
         if (!user) return res.json401();
         req.user = user;
         return next();

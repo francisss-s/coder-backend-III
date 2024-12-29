@@ -1,8 +1,8 @@
-import { readByEmail } from "../data/mongo/managers/users.manager.js";
+import usersManager from "../dao/mongo/managers/users.manager.js";
 
 async function isValidUser(req, res, next) {
   const { email, password } = req.body;
-  const one = await readByEmail(email);
+  const one = await usersManager.readByEmail(email);
   if (one) {
     return next();
   }
