@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 class Manager {
 
     constructor(model) {
@@ -58,6 +60,31 @@ class Manager {
             throw error
         }
     }
+    readOne = async (data) => {
+        try {
+            const one = await this.model.findOne(data).lean()
+            return one
+        } catch (error) {
+            throw error
+        }
+    }
+
+    readUserId = async (data) => {
+        console.log(data)
+        try {
+          // Validar y convertir user_id si es necesario
+          if (data.user_id && typeof data.user_id === "string") {
+            if (!mongoose.Types.ObjectId.isValid(data.user_id)) {
+              throw new Error("Invalid user_id format");
+            }
+            data.user_id = new mongoose.Types.ObjectId(data.user_id);
+          }
+          const one = await this.model.findOne(data).lean();
+          return one;
+        } catch (error) {
+          throw error;
+        }
+      };
 
 }
 

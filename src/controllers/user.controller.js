@@ -1,8 +1,11 @@
 import {
     createService,
     destroyService,
+    forgotService,
     readService,
+    resetPasswordService,
     updateService,
+    verifyService
 } from "../services/user.service.js";
 
 async function createUser(req, res) {
@@ -30,4 +33,66 @@ async function createUser(req, res) {
     return res.status(200).json({ response, message });
   }
   
-  export { createUser, readUsers, updateUser, destroyUser };
+  async function verifyAccount(req, res) {
+    try {
+      const { code } = req.query;
+      if (!code) {
+        return res.status(400).json({ error: "Missing verification code" });
+      }
+  
+      // llama al service
+      const user = await verifyService(code);
+      if (!user) {
+        return res.status(404).json({ error: "Invalid code or user not found" });
+      }
+      return res.json({ message: "User verified!", user });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+
+  async function forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+  
+      // Llamar al service
+      const { user, token } = await forgotService(email);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      // (Opcional) Enviar correo real con el token/link
+      // o retornar el token en la respuesta
+      return res.status(200).json({
+        message: "Reset token generated",
+        token,
+        user: {
+          email: user.email
+        }
+      });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async function resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body; 
+      if (!token || !newPassword) {
+        return res.status(400).json({ error: "Missing token or newPassword" });
+      }
+      const user = await resetPasswordService(token, newPassword);
+      if (!user) {
+        return res.status(404).json({ error: "Invalid token or user not found" });
+      }
+      return res.status(200).json({ message: "Password updated successfully", user });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  export { createUser, readUsers, updateUser, destroyUser,verifyAccount,forgotPassword,resetPassword};

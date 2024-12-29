@@ -6,6 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import usersManager from "../dao/mongo/managers/users.manager.js";
+import { v4 as uuidv4 } from "uuid";
 
 passport.use(
   "register",
@@ -21,28 +22,27 @@ passport.use(
           const info = { message: "USER ALREADY EXISTS", statusCode: 401 };
           return done(null, false, info);
         }
+        // Hashear password
         const hashedPassword = createHashUtil(password);
         
         let regObj = {
-          "first_name": req.body.first_name,
-          "last_name": req.body.last_name,
-          "email": email,
-          "age": req.body.age,
-          "role": req.body.role || "USER",
-          "password": hashedPassword
-        }
+          first_name: req.body.first_name,
+          last_name:  req.body.last_name,
+          email,
+          age:        req.body.age,
+          role:       req.body.role || "USER",
+          password:   hashedPassword,
+          // Generar verifyCode en cada registro
+          verifyUser: false,
+          verifyCode: uuidv4().split("-")[0] 
+        };
+
         const user = await usersManager.create(regObj);
 
-        // Generar token JWT
+        // Generar token JWT, etc...
         const payload = { user_id: user._id, role: user.role };
-        const token = jwt.sign(payload, process.env.SECRET_KEY, {
-          expiresIn: "1d",
-        });
-
-        // Marcar usuario como conectado
+        const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1d" });
         await usersManager.update(user._id, { isOnline: true });
-
-        // Adjuntar token al usuario para devolverlo
         user.token = token;
 
         return done(null, user);
@@ -52,6 +52,8 @@ passport.use(
     }
   )
 );
+
+
 passport.use(
   "login",
   new LocalStrategy(

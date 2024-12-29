@@ -3,7 +3,7 @@ import crypto from "crypto";
 
 const { persistence } = argsUtil;
 
-class UserDTO {
+class CartDto {
   constructor(data) {
     persistence !== "mongo" &&
       (this._id = crypto.randomBytes(12).toString("hex"));
@@ -16,4 +16,4 @@ class UserDTO {
   }
 }
 
-export default UserDTO;
+export default CartDto;

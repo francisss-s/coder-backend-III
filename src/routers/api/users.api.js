@@ -1,3 +1,5 @@
+import { forgotPassword, resetPassword, verifyAccount } from "../../controllers/user.controller.js";
+
 import CustomRouter from "../../utils/CustomRouter.util.js";
 import passportCb from "../../middlewares/passportCb.mid.js";
 
@@ -11,6 +13,9 @@ class UsersApiRouter extends CustomRouter {
     this.create("/login", ["PUBLIC"], passportCb("login"), login);
     this.create("/signout", ["USER", "ADMIN"], passportCb("signout"), signout);
     this.create("/current", ["PUBLIC"], passportCb("current"), current);
+    this.read("/verify", ["PUBLIC"], verifyAccount);
+    this.create("/forgot", ["PUBLIC"], forgotPassword);   // POST /api/users/forgot
+    this.update("/reset", ["PUBLIC"], resetPassword);     // PUT  /api/users/reset
   };
 }
 

@@ -25,6 +25,7 @@ server.use(express.urlencoded({ extended: true }))
 server.use(express.static("public"))
 server.use(morgan("dev"))
 server.use(cookieParser(process.env.SECRET_KEY))
+
 server.use(session({
     secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true,
     store: new MongoStore({ mongoUrl: process.env.MONGO_LINK, ttl: 60*60*24 })
