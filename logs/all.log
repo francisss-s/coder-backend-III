@@ -1,0 +1,18 @@
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:23:45.139Z"}
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:24:01.349Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:24:01.354Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:24:04.191Z"}
+{"level":"http","message":"📡 GET / 304 - 161ms","timestamp":"2025-02-06T04:24:14.443Z"}
+{"level":"http","message":"📡 GET /swagger-ui.css 304 - 229ms","timestamp":"2025-02-06T04:24:14.701Z"}
+{"level":"http","message":"📡 GET /swagger-ui-init.js 304 - 299ms","timestamp":"2025-02-06T04:24:14.779Z"}
+{"level":"http","message":"📡 GET /swagger-ui.css.map 304 - 218ms","timestamp":"2025-02-06T04:24:14.933Z"}
+{"level":"http","message":"📡 GET /swagger-ui-bundle.js 304 - 548ms","timestamp":"2025-02-06T04:24:15.022Z"}
+{"level":"http","message":"📡 GET /swagger-ui-standalone-preset.js 304 - 549ms","timestamp":"2025-02-06T04:24:15.027Z"}
+{"level":"http","message":"📡 GET /favicon-32x32.png 304 - 150ms","timestamp":"2025-02-06T04:24:15.423Z"}
+{"level":"http","message":"📡 GET /mockingusers?count=5 200 - 159ms","timestamp":"2025-02-06T04:24:23.577Z"}
+{"level":"error","message":"Error inserting mock data: usersNum is not defined","stack":"ReferenceError: usersNum is not defined\n    at generateAndSaveMocks (file:///C:/Users/fraci/OneDrive/Escritorio/Cursos/coder%20backend%20II/src/controllers/mocks.controller.js:35:40)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async file:///C:/Users/fraci/OneDrive/Escritorio/Cursos/coder%20backend%20II/src/utils/CustomRouter.util.js:15:9","timestamp":"2025-02-06T04:24:42.999Z"}
+{"level":"http","message":"📡 POST /api/mocks/2/2 500 - 327ms","timestamp":"2025-02-06T04:24:43.078Z"}
+{"level":"http","message":"📡 GET / 200 - 227ms","timestamp":"2025-02-06T04:24:58.047Z"}
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:25:09.904Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:25:09.907Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:25:10.772Z"}

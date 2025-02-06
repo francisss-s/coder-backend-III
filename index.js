@@ -1,8 +1,13 @@
 import "dotenv/config.js"
 
+import logger, { loggerMiddleware } from "./src/utils/logger.util.js";
+import { swaggerSpec, swaggerUi } from "./src/utils/swagger.util.js";
+
 import MongoStore from "connect-mongo"
 import cookieParser from "cookie-parser"
+import cors from "cors";
 import dbConnect from "./src/utils/dbConnect.util.js"
+import envUtil from "./src/utils/env.util.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js"
 import express from "express"
 import indexRouter from "./src/routers/index.router.js"
@@ -11,27 +16,61 @@ import pathHandler from "./src/middlewares/pathHandler.mid.js"
 import session from "express-session"
 
 // server
-const server = express()
-const port = process.env.PORT
-const ready = ()=> {
-    console.log("server ready on port "+port);
-    dbConnect()
-}
-server.listen(port, ready)
+
+// 📌 Inicializar el servidor
+const server = express();
+const PORT = envUtil.PORT || 3000;
+
+
+
+
 
 // middlewares
-server.use(express.json())
-server.use(express.urlencoded({ extended: true }))
-server.use(express.static("public"))
-server.use(morgan("dev"))
-server.use(cookieParser(process.env.SECRET_KEY))
+// 📌 Middlewares Globales
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+server.use(express.static("public"));
+server.use(cors()); // Permitir CORS
+server.use(morgan("dev")); // Logger HTTP
+server.use(cookieParser(envUtil.SECRET_KEY)); // Manejo de cookies
+server.use(loggerMiddleware); // Middleware personalizado para logs
 
-server.use(session({
-    secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true,
-    store: new MongoStore({ mongoUrl: process.env.MONGO_LINK, ttl: 60*60*24 })
-}))
+// 📌 Configuración de Sesión
+server.use(
+    session({
+      secret: envUtil.SECRET_KEY,
+      resave: false,
+      saveUninitialized: false,
+      store: new MongoStore({
+        mongoUrl: envUtil.MONGO_LINK,
+        ttl: 60 * 60 * 24, // 24 horas
+      }),
+      cookie: {
+        secure: envUtil.NODE_ENV === "production", // Solo en HTTPS en producción
+        httpOnly: true, // No accesible desde JS en el frontend
+        sameSite: "strict", // Protección contra CSRF
+        maxAge: 1000 * 60 * 60 * 24, // 1 día
+      },
+    })
+  );
 
-// routers
-server.use(indexRouter)
-server.use(errorHandler)
-server.use(pathHandler)
+
+// 📌 Documentación con Swagger
+server.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// 📌 Rutas de la API
+server.use(indexRouter);
+
+// 📌 Manejo de errores y rutas inexistentes
+server.use(errorHandler);
+server.use(pathHandler);
+
+// 📌 Iniciar Servidor
+const ready = ()=> {
+    console.log("server ready on port "+PORT);
+    dbConnect()
+}
+server.listen(PORT, () => {
+  logger.info(`🚀 Servidor corriendo en ${envUtil.BASE_URL}`);
+  ready();
+});

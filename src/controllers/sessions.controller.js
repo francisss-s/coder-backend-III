@@ -1,45 +1,85 @@
-import dao from "../dao/index.factory.js"
+import {BAD_REQUEST, NOT_FOUND, UNAUTHORIZED} from "../utils/errors/dictionary.error.js";
 
-const { UsersManager } = dao
+import CustomError from "../utils/errors/custom.error.js";
+import dao from "../dao/index.factory.js";
+
+const { UsersManager } = dao;
 
 async function register(req, res, next) {
-  const { _id } = req.user;
-  const message = "User Registered!";
-  //return res.status(201).json({ message, user_id: _id });
-  return res.json201(_id, message);
-}
-async function login(req, res, next) {
-  const { token } = req.user;
-  const opts = { maxAge: 60 * 60 * 24 * 7, httpOnly: true };
-  const message = "User logged in!";
-  const response = "OK";
-  return res.cookie("token", token, opts).json200(response, message);
-}
-function signout(req, res, next) {
-  const message = "User signed out!";
-  const response = "OK";
-  return res.clearCookie("token").json200(response, message);
-}
-async function online(req, res, next) {
-  const { user_id } = req.session;
-  const one = await UsersManager.readById(user_id);
-  if (req.session.user_id) {
-    const message = one.email + " is online";
-    const response = true;
-    return res.json200(response, message);
-  } else {
-    const message = "User is not online";
-    return res.json400(message);
+  try {
+    if (!req.user || !req.user._id) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const { _id } = req.user;
+    const message = "User Registered!";
+    return res.status(201).json({ message, user_id: _id });
+  } catch (error) {
+    next(error);
   }
 }
-function google(req, res, next) {
-  return res.status(200).json({ message: "USER LOGGED IN", token: req.token });
-}
-async function onlineToken(req, res, next) {
-  return res.status(200).json({
-    message: req.user.email.toUpperCase() + " IS ONLINE",
-    online: true,
-  });
+
+async function login(req, res, next) {
+  try {
+    if (!req.user || !req.user.token) {
+      throw CustomError.create(UNAUTHORIZED);
+    }
+    const { token } = req.user;
+    const opts = { maxAge: 60 * 60 * 24 * 7, httpOnly: true };
+    const message = "User logged in!";
+    return res.cookie("token", token, opts).status(200).json({ message });
+  } catch (error) {
+    next(error);
+  }
 }
 
-export { register, login, signout, onlineToken, google };
+function signout(req, res, next) {
+  try {
+    const message = "User signed out!";
+    return res.clearCookie("token").status(200).json({ message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function online(req, res, next) {
+  try {
+    if (!req.session || !req.session.user_id) {
+      throw CustomError.create(UNAUTHORIZED);
+    }
+    const one = await UsersManager.readById(req.session.user_id);
+    if (!one) {
+      throw CustomError.create(NOT_FOUND);
+    }
+    const message = `${one.email} is online`;
+    return res.status(200).json({ online: true, message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function google(req, res, next) {
+  try {
+    if (!req.token) {
+      throw CustomError.create(UNAUTHORIZED);
+    }
+    return res.status(200).json({ message: "USER LOGGED IN", token: req.token });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function onlineToken(req, res, next) {
+  try {
+    if (!req.user || !req.user.email) {
+      throw CustomError.create(UNAUTHORIZED);
+    }
+    return res.status(200).json({
+      message: `${req.user.email.toUpperCase()} IS ONLINE`,
+      online: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export { register, login, signout, online, onlineToken, google };

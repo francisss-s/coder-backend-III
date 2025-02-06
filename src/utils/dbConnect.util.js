@@ -1,12 +1,18 @@
-import { connect } from "mongoose";
+import envUtil from "./env.util.js";
+import logger from "./logger.util.js";
+import mongoose from "mongoose";
 
 async function dbConnect() {
-    try {
-        connect(process.env.MONGO_LINK)
-        console.log("mongodb connected");        
-    } catch (error) {
-        console.log(error);        
-    }
+  try {
+    await mongoose.connect(envUtil.MONGO_LINK, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    logger.info("✅ Conexión a MongoDB establecida correctamente.");
+  } catch (error) {
+    logger.error("❌ Error al conectar con MongoDB:", error);
+    process.exit(1); // Detener la aplicación si no puede conectarse a la BD
+  }
 }
 
 export default dbConnect;

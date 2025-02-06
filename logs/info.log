@@ -1,0 +1,8 @@
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:23:45.139Z"}
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:24:01.349Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:24:01.354Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:24:04.191Z"}
+{"level":"error","message":"Error inserting mock data: usersNum is not defined","stack":"ReferenceError: usersNum is not defined\n    at generateAndSaveMocks (file:///C:/Users/fraci/OneDrive/Escritorio/Cursos/coder%20backend%20II/src/controllers/mocks.controller.js:35:40)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async file:///C:/Users/fraci/OneDrive/Escritorio/Cursos/coder%20backend%20II/src/utils/CustomRouter.util.js:15:9","timestamp":"2025-02-06T04:24:42.999Z"}
+{"level":"info","message":"🚀 Servidor corriendo en http://localhost:3035","timestamp":"2025-02-06T04:25:09.904Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:25:09.907Z"}
+{"level":"info","message":"✅ Conexión a MongoDB establecida correctamente.","timestamp":"2025-02-06T04:25:10.772Z"}

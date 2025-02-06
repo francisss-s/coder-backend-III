@@ -6,58 +6,82 @@ import {
   updateService
 } from "../services/carts.service.js";
 
+import {BAD_REQUEST} from "../utils/errors/dictionary.error.js";
+import CustomError from "../utils/errors/custom.error.js";
 import mongoose from "mongoose";
 
-async function createCart(req, res) {
-  const message = "CART CREATED";
-  const data = req.body;
-  const response = await createService(data);
-  return res.status(201).json({ response, message });
+async function createCart(req, res, next) {
+  try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const message = "CART CREATED";
+    const data = req.body;
+    const response = await createService(data);
+    return res.status(201).json({ response, message });
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function readCartsFromUser(req, res) {
-  const { user_id } = req.params;
-
-  // Validar si el `user_id` es un ObjectId válido
-  if (!mongoose.Types.ObjectId.isValid(user_id)) {
-    return res.status(400).json({ message: "Invalid user_id format" });
-  }
-
+async function readCartsFromUser(req, res, next) {
   try {
+    const { user_id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+      throw CustomError.create(BAD_REQUEST);
+    }
     const message = "CARTS FOUND";
-    // Enviar el filtro correcto
     const response = await readService({ user_id: new mongoose.Types.ObjectId(user_id) });
     return res.status(200).json({ response, message });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
-async function updateCart(req, res) {
-  const { id } = req.params;
-  const data = req.body;
-  const message = "CART UPDATED";
-  const response = await updateService(id, data);
-  return res.status(200).json({ response, message });
-}
-
-async function destroyCart(req, res) {
-  const { id } = req.params;
-  const message = "CART DELETED";
-  // AHORA sí llamamos al service
-  const response = await destroyService(id);
-  return res.status(200).json({ response, message });
-}
-
-async function purchaseCart(req, res) {
+async function updateCart(req, res, next) {
   try {
-    const { cid } = req.params;     // interpretamos cid como user_id
-    const purchaserEmail = req.user?.email || "no-email@example.com"; 
-      // asumiendo que tu middleware de auth pone user en req.user
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const data = req.body;
+    if (!data || Object.keys(data).length === 0) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const message = "CART UPDATED";
+    const response = await updateService(id, data);
+    return res.status(200).json({ response, message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function destroyCart(req, res, next) {
+  try {
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const message = "CART DELETED";
+    const response = await destroyService(id);
+    return res.status(200).json({ response, message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function purchaseCart(req, res, next) {
+  try {
+    const { cid } = req.params;
+    if (!cid || !mongoose.Types.ObjectId.isValid(cid)) {
+      throw CustomError.create(BAD_REQUEST);
+    }
+    const purchaserEmail = req.user?.email || "no-email@example.com";
     const result = await purchase(cid, purchaserEmail);
     return res.status(200).json({ status: "success", result });
   } catch (error) {
-    return res.status(400).json({ status: "error", message: error.message });
+    next(error);
   }
 }
-export { createCart, readCartsFromUser, updateCart, destroyCart, purchaseCart};
+
+export { createCart, readCartsFromUser, updateCart, destroyCart, purchaseCart };

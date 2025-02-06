@@ -1,4 +1,5 @@
 import CustomRouter from "../../utils/CustomRouter.util.js";
+import MocksApiRouter from "./mocks.api.js";
 import cartsApiRouter from "./carts.api.js";
 import productsApiRouter from "./products.api.js";
 import sessionsApiRouter from "./sessions.api.js";
@@ -14,6 +15,7 @@ class ApiRouter extends CustomRouter {
     this.use("/products", ["PUBLIC"], productsApiRouter);
     this.use("/carts", ["PUBLIC"], cartsApiRouter);
     this.use("/sessions", ["PUBLIC"], sessionsApiRouter);
+    this.use("/mocks", ["PUBLIC"], MocksApiRouter)
   };
 }
 
