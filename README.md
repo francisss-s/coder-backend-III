@@ -52,15 +52,18 @@ npm install
 ### 3️⃣ Configurar variables de entorno
 Crea un archivo .env en la raíz del proyecto y define las siguientes variables:
 ```
-PORT=3000
-NODE_ENV=development
+PORT=3035
+NODE_ENV=production
 
 # MongoDB
-MONGO_URI_DEV=mongodb://localhost:27017/dev_db
-MONGO_URI_PROD=mongodb://localhost:27017/prod_db
+MONGO_LINK=tu_mongo_link
 
 # JWT
 SECRET_KEY=tu_secreto_jwt
+
+# logger
+LOG_LEVEL=debug
+
 ```
 ### 4️⃣ Iniciar el servidor
 
