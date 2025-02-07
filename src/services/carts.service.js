@@ -6,11 +6,8 @@ class CartsService {
   updateService = async (id, data) => await updateRepository(id, data);
   destroyService = async (id) => await destroyRepository(id);
   async purchase(user_id, purchaserEmail) {
-    console.log("user_id", user_id);
-    console.log("purchaserEmail", purchaserEmail);
     // 1. Obtener TODOS los docs de cart para user
     const cartItems = await readRepository({"user_id": user_id});
-    console.log("cartItems", cartItems);
     if (!cartItems || cartItems.length === 0) {
       throw new Error("No hay productos en el carrito");
     }

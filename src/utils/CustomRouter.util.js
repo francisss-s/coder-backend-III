@@ -24,7 +24,6 @@ class CustomRouter {
     res.json201 = (response, message) =>
       res.status(201).json({ response, message });
     res.json400 = (message) => {
-      console.log('Respuesta 400:', message);  // Log para verificar el mensaje
       res.status(400).json({ error: message });
     };
     

@@ -70,7 +70,6 @@ class Manager {
     }
 
     readUserId = async (data) => {
-        console.log(data)
         try {
           // Validar y convertir user_id si es necesario
           if (data.user_id && typeof data.user_id === "string") {

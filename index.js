@@ -70,7 +70,7 @@ const ready = ()=> {
     console.log("server ready on port "+PORT);
     dbConnect()
 }
-server.listen(PORT, () => {
-  logger.info(`🚀 Servidor corriendo en ${envUtil.BASE_URL}`);
+server.listen(PORT,"0.0.0.0", () => {
   ready();
+  logger.info(`🚀 Servidor corriendo en puerto ${envUtil.PORT}`);
 });

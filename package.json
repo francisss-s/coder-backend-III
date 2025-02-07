@@ -6,7 +6,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js --env production",
-    "dev": "nodemon ./index.js --env development"
+    "dev": "nodemon ./index.js --env development",
+    "docker:build": "docker build -t franzisz/coder3 .",
+    "docker:run": "docker run -d -p 3035:3035 --name coder3-container --env-file .env.production franzisz/coder3",
+    "docker:logs": "docker logs -f coder3-container",
+    "docker:stop": "docker stop coder3-container && docker rm coder3-container",
+    "docker:push": "docker push franzisz/coder3"
   },
   "keywords": [],
   "author": "",

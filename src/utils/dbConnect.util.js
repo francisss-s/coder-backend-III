@@ -4,10 +4,7 @@ import mongoose from "mongoose";
 
 async function dbConnect() {
   try {
-    await mongoose.connect(envUtil.MONGO_LINK, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(envUtil.MONGO_LINK);
     logger.info("✅ Conexión a MongoDB establecida correctamente.");
   } catch (error) {
     logger.error("❌ Error al conectar con MongoDB:", error);

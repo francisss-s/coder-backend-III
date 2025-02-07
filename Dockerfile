@@ -1,23 +1,23 @@
-# Usar una imagen oficial de Node.js
-FROM node:22
+# 🔹 Usar una imagen oficial de Node.js ligera
+FROM node:20-alpine
 
-# Establecer el directorio de trabajo en el contenedor
+# 🔹 Establecer el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiar package.json y package-lock.json al contenedor
-COPY package*.json ./
+# 🔹 Copiar los archivos de configuración de dependencias
+COPY package.json ./
 
-# Instalar dependencias
+# 🔹 Instalar solo dependencias necesarias para producción
 RUN npm install
 
-# Copiar el resto de los archivos del proyecto
+# 🔹 Copiar el resto del código de la aplicación
 COPY . .
 
-# Exponer el puerto que usa la aplicación
-EXPOSE 3000
+# 🔹 Exponer el puerto donde se ejecutará la app
+EXPOSE 3035
 
-# Definir la variable de entorno para producción
+# 🔹 Definir el entorno de ejecución por defecto como producción
 ENV NODE_ENV=production
 
-# Comando para ejecutar la aplicación
-CMD ["npm", "start"]
+# 🔹 Comando de ejecución
+CMD ["node", "index.js", "--env", "production"]
