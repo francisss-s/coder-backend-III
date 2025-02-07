@@ -50,7 +50,7 @@ npm install
 ```
 
 ### 3️⃣ Configurar variables de entorno
-Crea un archivo .env en la raíz del proyecto y define las siguientes variables:
+Crea un archivo .env.production en la raíz del proyecto y define las siguientes variables:
 ```
 PORT=3035
 NODE_ENV=production
@@ -76,6 +76,24 @@ npm run dev
 npm start
 ```
 
+### Tambien se puede utilizar la imagen de docker
+
+#### Para  obtener la imagen
+``` sh
+docker push franzisz/coder3:tagname
+```
+
+#### Para ejecutar el contenedor puedes hacer
+``` sh
+npm docker:run
+```
+Debes generar un archivo .env.production para poder ejecutarlo con las variables de entonrno que se mencionaron en el punto 3️⃣
+
+#### Para detener el contendor puedes hacer lo siguente 
+
+``` sh
+npm docker:stop
+```
 
 ## 📌 Rutas de la API
 
