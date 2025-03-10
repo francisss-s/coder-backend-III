@@ -1,12 +1,13 @@
 import "dotenv/config.js"
 
 import logger, { loggerMiddleware } from "./src/utils/logger.util.js";
-import { swaggerSpec, swaggerUi } from "./src/utils/swagger.util.js";
+import { serve, setup } from "swagger-ui-express"
 
 import MongoStore from "connect-mongo"
 import cookieParser from "cookie-parser"
 import cors from "cors";
 import dbConnect from "./src/utils/dbConnect.util.js"
+import docsSpec from "./src/utils/docSpec.util.js"
 import envUtil from "./src/utils/env.util.js";
 import errorHandler from "./src/middlewares/errorHandler.mid.js"
 import express from "express"
@@ -56,8 +57,7 @@ server.use(
 
 
 // 📌 Documentación con Swagger
-server.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+server.use("/api/docs", serve, setup(docsSpec));
 // 📌 Rutas de la API
 server.use(indexRouter);
 

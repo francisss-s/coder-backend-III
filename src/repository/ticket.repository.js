@@ -1,18 +1,30 @@
-import dao from "../dao/index.factory.js"; // O la ruta donde instancies los managers
+import dao from "../dao/index.factory.js";
 
-const { TicketsManager } = dao; // Asegúrate de exportar "TicketsManager" en tu factory
+const { TicketsManager } = dao;
 
 class TicketsRepository {
   async createTicket(data) {
     return await TicketsManager.create(data);
   }
+
   async getTicketById(id) {
     return await TicketsManager.readById(id);
   }
-  async getTickets(query) {
+
+  async getTickets(query = {}) {
     return await TicketsManager.read(query);
+  }
+
+  async updateTicket(id, data) {
+    return await TicketsManager.update(id, data);
+  }
+
+  async deleteTicket(id) {
+    return await TicketsManager.destroy(id);
   }
 }
 
 const repository = new TicketsRepository();
-export default repository;
+const { createTicket, getTicketById, getTickets, updateTicket, deleteTicket } = repository;
+
+export { createTicket, getTicketById, getTickets, updateTicket, deleteTicket };

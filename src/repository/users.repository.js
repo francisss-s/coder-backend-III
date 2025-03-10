@@ -5,10 +5,11 @@ const { UsersManager } = dao
 
 class UsersRepository {
   createRepository = async (data) => {
+    
     data = new UserDTO(data)
     return await UsersManager.create(data);
   }
-  readRepository = async () => await UsersManager.read();
+  readRepository = async (user_id) => await UsersManager.readOne({ _id: user_id });
   updateRepository = async (id, data) => await UsersManager.update(id, data);
   destroyRepository = async (id) => await UsersManager.destroy(id);
   verifyRepository = async (code) => {

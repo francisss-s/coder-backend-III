@@ -15,11 +15,14 @@ const ticketSchema = new Schema({
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
+    min: 0, // No permitir valores negativos
   },
   purchaser: {
-    type: String, // Guardaremos el email del usuario
-    required: true
+    type: String,
+    required: true,
+    trim: true,  // Elimina espacios innecesarios en emails
+    lowercase: true,
   }
 });
 

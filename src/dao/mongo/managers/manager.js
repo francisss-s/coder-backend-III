@@ -85,6 +85,16 @@ class Manager {
         }
       };
 
+      bulkWrite = async (operations) => {
+        try {
+            const result = await this.model.bulkWrite(operations);
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+
 }
 
 export default Manager

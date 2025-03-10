@@ -5,15 +5,14 @@ const { persistence } = argsUtil;
 
 class CartDto {
   constructor(data) {
-    persistence !== "mongo" &&
-      (this._id = crypto.randomBytes(12).toString("hex"));
-    this.product_id = data.product_id;
+    persistence !== "mongo" && (this._id = crypto.randomBytes(12).toString("hex"));
     this.user_id = data.user_id;
-    this.quantity = data.quantity;
-    this.state = data.state || "reserved";
+    this.products = data.products || [];
+    this.status = data.status || "active"; // Corregido de 'state' a 'status'
     persistence !== "mongo" && (this.createdAt = new Date());
     persistence !== "mongo" && (this.updatedAt = new Date());
   }
 }
+
 
 export default CartDto;

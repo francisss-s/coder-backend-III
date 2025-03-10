@@ -1,0 +1,118 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Product unique identifier (MongoDB ObjectId).
+        title:
+          type: string
+          description: Product title.
+          example: iPhone 15
+        description:
+          type: string
+          description: Product description.
+          example: Latest Apple smartphone.
+        price:
+          type: number
+          format: float
+          description: Product price.
+          example: 999.99
+        stock:
+          type: integer
+          description: Available stock quantity.
+          example: 50
+        category:
+          type: string
+          enum: [celulares, tablets, computadoras]
+          description: Product category.
+          example: celulares
+      required:
+        - title
+        - price
+        - stock
+        - category
+paths:
+  /api/products:
+    post:
+      summary: Crea un nuevo producto.
+      tags: [Products]
+      description: Agrega un nuevo producto al catálogo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        201:
+          description: Producto creado exitosamente.
+        400:
+          description: Error en la validación de los datos.
+    get:
+      summary: Obtiene todos los productos.
+      tags: [Products]
+      description: Devuelve una lista de todos los productos en el catálogo.
+      responses:
+        200:
+          description: Lista de productos obtenida correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        404:
+          description: No se encontraron productos.
+  /api/products/{id}:
+    put:
+      summary: Actualiza un producto existente.
+      tags: [Products]
+      description: Modifica los detalles de un producto en el catálogo.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a actualizar.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        200:
+          description: Producto actualizado correctamente.
+        400:
+          description: Error en la validación de los datos.
+        403:
+          description: No autorizado para actualizar el producto.
+        404:
+          description: Producto no encontrado.
+    delete:
+      summary: Elimina un producto del catálogo.
+      tags: [Products]
+      description: Borra un producto identificado por su ID.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del producto a eliminar.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Producto eliminado correctamente.
+        400:
+          description: ID de producto inválido.
+        403:
+          description: No autorizado para eliminar el producto.
+        404:
+          description: Producto no encontrado.

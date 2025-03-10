@@ -1,0 +1,102 @@
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+  schemas:
+    MockUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario.
+        last_name:
+          type: string
+          description: Apellido del usuario.
+        email:
+          type: string
+          format: email
+          description: Correo electrónico del usuario.
+        age:
+          type: integer
+          description: Edad del usuario.
+        password:
+          type: string
+          description: Contraseña del usuario.
+        role:
+          type: string
+          enum: [USER, ADMIN]
+          description: Rol del usuario.
+    
+    MockProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        price:
+          type: number
+          format: float
+          description: Precio del producto.
+        stock:
+          type: integer
+          description: Stock disponible del producto.
+        category:
+          type: string
+          enum: [celulares, tablets, computadoras]
+          description: Categoría del producto.
+
+paths:
+  /mocks/mockingusers:
+    get:
+      summary: Genera datos falsos de usuarios.
+      tags: [Mocks]
+      description: Genera una cantidad específica de usuarios falsos.
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: Número de usuarios a generar (por defecto 10).
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Usuarios falsos generados correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MockUser"
+        400:
+          description: Parámetro inválido.
+  
+  /mocks/mockingdata:
+    post:
+      summary: Genera y almacena datos falsos de usuarios y productos.
+      tags: [Mocks]
+      description: Genera y guarda en la base de datos un número determinado de usuarios y productos falsos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: integer
+                  description: Número de usuarios a generar.
+                products:
+                  type: integer
+                  description: Número de productos a generar.
+      responses:
+        201:
+          description: Datos de prueba insertados correctamente.
+        400:
+          description: Parámetros inválidos.
+        500:
+          description: Error interno del servidor.

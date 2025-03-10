@@ -9,11 +9,11 @@ class CartsRepository {
     return await CartsManager.create(data);
   };
   readRepository = async (user_id) => await CartsManager.readUserId(user_id);
+  readOneRepository = async (id) => await CartsManager.readById(id);
   updateRepository = async (id, data) => await CartsManager.update(id, data);
   destroyRepository = async (id) => await CartsManager.destroy(id);
   readAllByUserRepository = async (user_id) => {
-    // si state="reserved" es tu criterio
-    return await CartsManager.read({ user_id, state: "reserved" });
+    return await CartsManager.read({ user_id, status: "active" });
   };
 }
 
@@ -21,12 +21,16 @@ const repository = new CartsRepository();
 const {
   createRepository,
   readRepository,
+  readOneRepository,
   updateRepository,
   destroyRepository,
+  readAllByUserRepository,  // ✅ Agregado
 } = repository;
 export {
   createRepository,
   readRepository,
+  readOneRepository,
   updateRepository,
   destroyRepository,
+  readAllByUserRepository,  // ✅ Agregado
 };
