@@ -50,17 +50,20 @@ npm install
 ```
 
 ### 3️⃣ Configurar variables de entorno
-Crea un archivo .env en la raíz del proyecto y define las siguientes variables:
+Crea un archivo .env.production en la raíz del proyecto y define las siguientes variables:
 ```
-PORT=3000
-NODE_ENV=development
+PORT=3035
+NODE_ENV=production
 
 # MongoDB
-MONGO_URI_DEV=mongodb://localhost:27017/dev_db
-MONGO_URI_PROD=mongodb://localhost:27017/prod_db
+MONGO_LINK=tu_mongo_link
 
 # JWT
 SECRET_KEY=tu_secreto_jwt
+
+# logger
+LOG_LEVEL=debug
+
 ```
 ### 4️⃣ Iniciar el servidor
 
@@ -73,6 +76,24 @@ npm run dev
 npm start
 ```
 
+### Tambien se puede utilizar la imagen de docker
+
+#### Para  obtener la imagen
+``` sh
+docker push franzisz/coder3:tagname
+```
+
+#### Para ejecutar el contenedor puedes hacer
+``` sh
+npm docker:run
+```
+Debes generar un archivo .env.production para poder ejecutarlo con las variables de entonrno que se mencionaron en el punto 3️⃣
+
+#### Para detener el contendor puedes hacer lo siguente 
+
+``` sh
+npm docker:stop
+```
 
 ## 📌 Rutas de la API
 
